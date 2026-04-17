@@ -4,13 +4,16 @@ function createPost() {
 
     if (postInput.value.trim() === "") return;
 
-    // Create unique ID for this post
-    const postId = Date.now();
+    const postId = 'post-' + Date.now(); // Improved ID naming
 
     const postElement = document.createElement('div');
     postElement.className = 'post';
+    postElement.id = postId;
     postElement.innerHTML = `
-        <p class="post-text">${postInput.value}</p>
+        <div style="display: flex; justify-content: space-between;">
+            <p class="post-text">${postInput.value}</p>
+            <button class="delete-btn" onclick="removePost('${postId}')">Remove Post</button>
+        </div>
         
         <div class="post-actions">
             <button class="like-btn" onclick="toggleLike(this)">Like <span>0</span></button>
@@ -19,14 +22,15 @@ function createPost() {
         <div class="comment-section">
             <ul class="comment-list" id="comments-${postId}"></ul>
             <div class="comment-input-area">
-                <input type="text" placeholder="Write a comment..." id="input-${postId}">
-                <button onclick="addComment(${postId})">Reply</button>
+                <input type="text" placeholder="Write a comment..." id="input-${postId}" 
+                       onkeypress="if(event.key === 'Enter') addComment('${postId}')">
+                <button onclick="addComment('${postId}')">Reply</button>
             </div>
         </div>
     `;
 
-    feed.prepend(postElement); // Adds new post to the top
-    postInput.value = ""; // Clear input
+    feed.prepend(postElement);
+    postInput.value = "";
 }
 
 function toggleLike(btn) {
@@ -34,12 +38,7 @@ function toggleLike(btn) {
     let count = parseInt(span.innerText);
     
     btn.classList.toggle('liked');
-    
-    if (btn.classList.contains('liked')) {
-        span.innerText = count + 1;
-    } else {
-        span.innerText = count - 1;
-    }
+    span.innerText = btn.classList.contains('liked') ? count + 1 : count - 1;
 }
 
 function addComment(postId) {
@@ -48,11 +47,10 @@ function addComment(postId) {
 
     if (input.value.trim() === "") return;
 
-    // Buat ID unik untuk setiap komen supaya senang nak delete
     const commentId = 'comment-' + Date.now();
 
     const li = document.createElement('li');
-    li.id = commentId; // Set ID pada element li
+    li.id = commentId;
     li.innerHTML = `
         <span class="comment-text">${input.value}</span>
         <button class="delete-btn" onclick="removeComment('${commentId}')">Delete</button>
@@ -62,10 +60,15 @@ function addComment(postId) {
     input.value = "";
 }
 
-// Fungsi baru untuk buang komen
 function removeComment(commentId) {
-    const commentElement = document.getElementById(commentId);
-    if (commentElement) {
-        commentElement.remove();
+    const el = document.getElementById(commentId);
+    if (el) el.remove();
+}
+
+// New function to remove the whole post
+function removePost(postId) {
+    if(confirm("Delete this post?")) {
+        const el = document.getElementById(postId);
+        if (el) el.remove();
     }
 }
