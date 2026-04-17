@@ -1,71 +1,106 @@
+// ===== Mini Social Feed (XSS Safe) =====
+
+// Utility: create element with class
+function el(tag, className) {
+    const element = document.createElement(tag);
+    if (className) element.className = className;
+    return element;
+}
+
+// Create Post
 function createPost() {
     const postInput = document.getElementById('postInput');
     const feed = document.getElementById('feed');
 
-    if (postInput.value.trim() === "") return;
+    const content = postInput.value.trim();
+    if (!content) return;
 
-    // Create unique ID for this post
     const postId = Date.now();
 
-    const postElement = document.createElement('div');
-    postElement.className = 'post';
-    postElement.innerHTML = `
-        <p class="post-text">${postInput.value}</p>
-        
-        <div class="post-actions">
-            <button class="like-btn" onclick="toggleLike(this)">Like <span>0</span></button>
-        </div>
+    const post = el('div', 'post');
 
-        <div class="comment-section">
-            <ul class="comment-list" id="comments-${postId}"></ul>
-            <div class="comment-input-area">
-                <input type="text" placeholder="Write a comment..." id="input-${postId}">
-                <button onclick="addComment(${postId})">Reply</button>
-            </div>
-        </div>
-    `;
+    // Post text (XSS SAFE)
+    const postText = el('p', 'post-text');
+    postText.textContent = content;
 
-    feed.prepend(postElement); // Adds new post to the top
-    postInput.value = ""; // Clear input
+    // Actions
+    const actions = el('div', 'post-actions');
+
+    const likeBtn = el('button', 'like-btn');
+    likeBtn.innerHTML = 'Like <span>0</span>'; // static HTML only
+    likeBtn.addEventListener('click', () => toggleLike(likeBtn));
+
+    actions.appendChild(likeBtn);
+
+    // Comment section
+    const commentSection = el('div', 'comment-section');
+
+    const commentList = el('ul', 'comment-list');
+    commentList.id = `comments-${postId}`;
+
+    const inputArea = el('div', 'comment-input-area');
+
+    const commentInput = document.createElement('input');
+    commentInput.type = 'text';
+    commentInput.placeholder = 'Write a comment...';
+    commentInput.id = `input-${postId}`;
+
+    const replyBtn = document.createElement('button');
+    replyBtn.textContent = 'Reply';
+    replyBtn.addEventListener('click', () => addComment(postId));
+
+    inputArea.append(commentInput, replyBtn);
+    commentSection.append(commentList, inputArea);
+
+    post.append(postText, actions, commentSection);
+    feed.prepend(post);
+
+    postInput.value = '';
 }
 
+// Like toggle
 function toggleLike(btn) {
     const span = btn.querySelector('span');
-    let count = parseInt(span.innerText);
-    
+    let count = Number(span.textContent);
+
     btn.classList.toggle('liked');
-    
-    if (btn.classList.contains('liked')) {
-        span.innerText = count + 1;
-    } else {
-        span.innerText = count - 1;
-    }
+    span.textContent = btn.classList.contains('liked') ? count + 1 : count - 1;
 }
 
+// Add comment
 function addComment(postId) {
     const input = document.getElementById(`input-${postId}`);
     const list = document.getElementById(`comments-${postId}`);
 
-    if (input.value.trim() === "") return;
+    const content = input.value.trim();
+    if (!content) return;
 
-    // Buat ID unik untuk setiap komen supaya senang nak delete
-    const commentId = 'comment-' + Date.now();
+    const commentId = `comment-${Date.now()}`;
 
     const li = document.createElement('li');
-    li.id = commentId; // Set ID pada element li
-    li.innerHTML = `
-        <span class="comment-text">${input.value}</span>
-        <button class="delete-btn" onclick="removeComment('${commentId}')">Delete</button>
-    `;
-    
+    li.id = commentId;
+
+    // Comment text (XSS SAFE)
+    const text = document.createElement('span');
+    text.className = 'comment-text';
+    text.textContent = content;
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'delete-btn';
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.addEventListener('click', () => removeComment(commentId));
+
+    li.append(text, deleteBtn);
     list.appendChild(li);
-    input.value = "";
+
+    input.value = '';
 }
 
-// Fungsi baru untuk buang komen
+// Remove comment
 function removeComment(commentId) {
-    const commentElement = document.getElementById(commentId);
-    if (commentElement) {
-        commentElement.remove();
-    }
+    const el = document.getElementById(commentId);
+    if (el) el.remove();
 }
+
+// Expose createPost globally (for HTML button)
+window.createPost = createPost;
