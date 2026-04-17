@@ -48,8 +48,24 @@ function addComment(postId) {
 
     if (input.value.trim() === "") return;
 
+    // Buat ID unik untuk setiap komen supaya senang nak delete
+    const commentId = 'comment-' + Date.now();
+
     const li = document.createElement('li');
-    li.innerText = input.value;
+    li.id = commentId; // Set ID pada element li
+    li.innerHTML = `
+        <span class="comment-text">${input.value}</span>
+        <button class="delete-btn" onclick="removeComment('${commentId}')">Delete</button>
+    `;
+    
     list.appendChild(li);
     input.value = "";
+}
+
+// Fungsi baru untuk buang komen
+function removeComment(commentId) {
+    const commentElement = document.getElementById(commentId);
+    if (commentElement) {
+        commentElement.remove();
+    }
 }
