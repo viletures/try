@@ -1,49 +1,164 @@
-body { font-family: sans-serif; background: #f0f2f5; display: flex; justify-content: center; }
-.feed-container { width: 500px; margin-top: 20px; }
+/* Global */
+body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #f0f2f5, #e6e9f0);
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding: 20px;
+}
 
-.post-creator, .post {
-    background: white;
-    padding: 15px;
-    border-radius: 8px;
+/* Container */
+.feed-container {
+    width: 100%;
+    max-width: 520px;
+}
+
+/* Card Style */
+.post-creator,
+.post {
+    background: #ffffff;
+    padding: 16px;
+    border-radius: 14px;
     margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-textarea { width: 100%; height: 60px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; }
-
-.post-text { font-size: 1.1rem; margin-bottom: 15px; }
-
-.like-btn { cursor: pointer; border: none; background: #eee; padding: 5px 10px; border-radius: 4px; }
-.like-btn.liked { background: #1877f2; color: white; }
-
-.comment-section { margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px; }
-.comment-list { list-style: none; padding: 0; font-size: 0.9rem; }
-/* Update bahagian ni dalam style.css kau */
-
-.comment-list li { 
-    background: #f0f2f5; 
-    padding: 8px 12px; 
-    border-radius: 12px; 
-    margin-bottom: 5px; 
-    display: flex;             /* Guna flex supaya boleh susun tepi ke tepi */
-    justify-content: space-between; /* Teks kiri, butang kanan */
-    align-items: center;       /* Center secara menegak */
+.post:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
 }
 
+/* Textarea */
+textarea {
+    width: 100%;
+    height: 70px;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    resize: none;
+    font-size: 0.95rem;
+    outline: none;
+}
+
+textarea:focus {
+    border-color: #1877f2;
+    box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.15);
+}
+
+/* Post Text */
+.post-text {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    margin-bottom: 15px;
+    color: #1c1e21;
+}
+
+/* Like Button */
+.like-btn {
+    cursor: pointer;
+    border: none;
+    background: #f0f2f5;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.like-btn:hover {
+    background: #e4e6eb;
+}
+
+.like-btn.liked {
+    background: #1877f2;
+    color: white;
+}
+
+/* Comment Section */
+.comment-section {
+    margin-top: 15px;
+    border-top: 1px solid #eee;
+    padding-top: 12px;
+}
+
+/* Comment List */
+.comment-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* Comment Bubble */
+.comment-list li {
+    background: #f0f2f5;
+    padding: 8px 12px;
+    border-radius: 14px;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    transition: background 0.2s ease;
+}
+
+.comment-list li:hover {
+    background: #e4e6eb;
+}
+
+/* Delete Button */
 .delete-btn {
     background: transparent;
     border: none;
     color: #888;
     cursor: pointer;
-    font-size: 0.7rem;
-    margin-left: 10px;
-    transition: color 0.2s;
+    font-size: 0.75rem;
+    opacity: 0.6;
+    transition: color 0.2s, opacity 0.2s;
+}
+
+.comment-list li:hover .delete-btn {
+    opacity: 1;
 }
 
 .delete-btn:hover {
-    color: #ff4d4d; /* Merah bila hover */
-    text-decoration: underline;
+    color: #ff4d4d;
 }
 
-.comment-input-area { display: flex; gap: 5px; margin-top: 10px; }
-.comment-input-area input { flex-grow: 1; border: 1px solid #ddd; border-radius: 20px; padding: 5px 10px; }
+/* Comment Input Area */
+.comment-input-area {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.comment-input-area input {
+    flex-grow: 1;
+    border: 1px solid #ddd;
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    outline: none;
+}
+
+.comment-input-area input:focus {
+    border-color: #1877f2;
+    box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.15);
+}
+
+/* Optional Send Button (if any) */
+.comment-input-area button {
+    border: none;
+    background: #1877f2;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.2s;
+}
+
+.comment-input-area button:hover {
+    background: #145dbf;
+}
